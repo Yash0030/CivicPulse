@@ -1,7 +1,14 @@
 import os
+import sys
+from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
+
+# Ensure project root is in sys.path so 'backend' package imports always work
+ROOT_DIR = Path(__file__).resolve().parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
 
 from backend.routers import auth, complaints, analytics, agent
 
