@@ -1,0 +1,15 @@
+**/.git
+**/.gitignore
+**/node_modules
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/.env
+**/.env.*
+!.env.example
+**/dist
+**/.pytest_cache
+**/.idea
+**/.vscode
+**/*.log

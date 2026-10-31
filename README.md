@@ -68,45 +68,55 @@ graph TD
 ## 📁 Project Structure
 
 ```
-pothole-complaint-agentic-ai-main/
+CivicPulse/
+│
+├── .env.example                     # Unified environment template
+├── .gitignore                       # Global Git ignore rules (secrets, caches, build files)
+├── .dockerignore                    # Docker build exclusion rules
+├── docker-compose.yml               # Multi-container orchestration (FastAPI + React + MongoDB)
+├── start-dev.bat                    # Windows 1-click full-stack dev launcher
+├── start-dev.sh                     # Linux/macOS dev launcher
+├── README.md                        # Master project documentation & architecture guide
 │
 ├── backend/                         # FastAPI Backend
-│   ├── .env                         # Backend environment variables
-│   ├── .env.example                 # Example configuration
+│   ├── .env.example                 # Backend environment example
+│   ├── Dockerfile                   # Backend container definition
+│   ├── requirements.txt             # Python dependencies
+│   ├── main.py                      # FastAPI app entrypoint & CORS middleware
 │   ├── database.py                  # PyMongo client + in-memory resilient fallback
-│   ├── main.py                      # FastAPI app entrypoint & CORS
 │   ├── models.py                    # Pydantic data models & Civic categories
-│   ├── requirements.txt             # Backend dependencies
 │   ├── routers/
+│   │   ├── __init__.py              # Routers package marker
 │   │   ├── auth.py                  # JWT authentication & Citizen/Admin login
 │   │   ├── complaints.py            # Multimodal grievance filing, voting, lifecycle
 │   │   ├── analytics.py             # Public accountability ledger metrics
 │   │   └── agent.py                 # LangGraph agent triggers & audit log API
 │   └── services/
-│       ├── vision_service.py        # Gemini multimodal vision triage
-│       └── agent_service.py         # LangGraph StateGraph agent workflow
+│       ├── __init__.py              # Services package marker
+│       ├── vision_service.py        # Gemini 2.0 Flash + Roboflow computer vision triage
+│       ├── agent_service.py         # LangGraph StateGraph autonomous agent workflow
+│       └── storage_service.py       # Cloudinary / Base64 image storage service
 │
-├── frontend/                        # React Single Page App (Vite)
-│   ├── .env                         # Frontend environment variables
-│   ├── .env.example                 # Frontend example configuration
-│   ├── index.html                   # HTML template with Google Fonts & Leaflet styles
-│   ├── package.json                 # React 19, Lucide, Leaflet dependencies
-│   ├── vite.config.js               # Vite bundler config
-│   └── src/
-│       ├── App.jsx                  # Main application state & tab coordinator
-│       ├── api.js                   # Unified API client & Auth handlers
-│       ├── index.css                # Modern design system & glassmorphism
-│       └── components/
-│           ├── Navbar.jsx           # Header & tab switcher
-│           ├── HeroSection.jsx      # Track Concept banner & category shortcuts
-│           ├── GrievanceFeed.jsx    # Complaint cards, community voting & triage details
-│           ├── CivicMap.jsx         # Interactive Leaflet GIS map with glowing category pins
-│           ├── TransparencyDashboard.jsx # Public SLA accountability charts
-│           ├── AgentCommandCenter.jsx    # LangGraph topology & live terminal audit logs
-│           ├── ReportModal.jsx      # Multimodal grievance submission & AI preview
-│           └── AuthModal.jsx        # Citizen & Evaluator 1-click Demo login
-│
-└── README.md
+└── frontend/                        # React Single Page App (Vite)
+    ├── .env.example                 # Frontend environment example
+    ├── Dockerfile                   # Frontend production Nginx multi-stage build
+    ├── package.json                 # React 19, Lucide, Leaflet dependencies
+    ├── vite.config.js               # Vite bundler config
+    ├── README.md                    # Frontend client documentation
+    ├── public/                      # Static assets & SVG icons
+    └── src/
+        ├── App.jsx                  # Main application state & tab coordinator
+        ├── api.js                   # Unified API client & Auth handlers
+        ├── index.css                # Modern design system & glassmorphism tokens
+        └── components/
+            ├── Navbar.jsx           # Header & tab switcher
+            ├── HeroSection.jsx      # Track Concept banner & category shortcuts
+            ├── GrievanceFeed.jsx    # Complaint cards, community voting & triage details
+            ├── CivicMap.jsx         # Interactive Leaflet GIS map with glowing category pins
+            ├── TransparencyDashboard.jsx # Public SLA accountability charts
+            ├── AgentCommandCenter.jsx    # LangGraph topology & live terminal audit logs
+            ├── ReportModal.jsx      # Multimodal grievance submission & AI preview
+            └── AuthModal.jsx        # Citizen & Evaluator 1-click Demo login
 ```
 
 ---
