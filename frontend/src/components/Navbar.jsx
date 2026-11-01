@@ -144,8 +144,8 @@ export default function Navbar({ activeTab, setActiveTab, onOpenReport, user, on
         {/* Action Controls & User Account */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           
-          {/* Admin vs Citizen Action Buttons */}
-          {isAdmin ? (
+          {/* Admin-only "Switch to Citizen View" preview button */}
+          {isAdmin && (
             <button
               onClick={onSwitchRole}
               title="Preview the platform as an ordinary citizen"
@@ -162,30 +162,9 @@ export default function Navbar({ activeTab, setActiveTab, onOpenReport, user, on
             >
               👤 Switch to Citizen View
             </button>
-          ) : (
-            <button
-              onClick={onOpenAdminAuth || onOpenAuth}
-              title="Sign in with Municipal Admin credentials"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '6px 14px',
-                borderRadius: '6px',
-                border: '1px solid #ECB365',
-                background: 'rgba(236, 179, 101, 0.15)',
-                color: '#ECB365',
-                fontSize: '12px',
-                fontWeight: '800',
-                cursor: 'pointer'
-              }}
-            >
-              <ShieldAlert size={14} />
-              🛡️ Admin Login
-            </button>
           )}
 
-          {/* Citizen-only "File Complaint" button in navbar */}
+          {/* Citizen-only "File Issue" button (shown for citizen or guest) */}
           {!isAdmin && (
             <button
               onClick={onOpenReport}
@@ -208,6 +187,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenReport, user, on
             </button>
           )}
 
+          {/* User Account Controls */}
           {user ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div style={{
@@ -240,21 +220,43 @@ export default function Navbar({ activeTab, setActiveTab, onOpenReport, user, on
               </button>
             </div>
           ) : (
-            <button
-              onClick={onOpenAuth}
-              style={{
-                border: '1px solid rgba(180, 235, 230, 0.3)',
-                padding: '7px 18px',
-                color: '#B4EBE6',
-                backgroundColor: 'rgba(180, 235, 230, 0.08)',
-                borderRadius: '6px',
-                fontWeight: '600',
-                fontSize: '13px',
-                cursor: 'pointer'
-              }}
-            >
-              Citizen Sign In
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <button
+                onClick={onOpenAuth}
+                style={{
+                  border: '1px solid rgba(180, 235, 230, 0.3)',
+                  padding: '7px 18px',
+                  color: '#B4EBE6',
+                  backgroundColor: 'rgba(180, 235, 230, 0.08)',
+                  borderRadius: '6px',
+                  fontWeight: '600',
+                  fontSize: '13px',
+                  cursor: 'pointer'
+                }}
+              >
+                Citizen Sign In
+              </button>
+              <button
+                onClick={onOpenAdminAuth}
+                title="Municipal Admin Portal"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  border: '1px solid rgba(236, 179, 101, 0.5)',
+                  padding: '7px 14px',
+                  color: '#ECB365',
+                  backgroundColor: 'rgba(236, 179, 101, 0.12)',
+                  borderRadius: '6px',
+                  fontWeight: '700',
+                  fontSize: '12px',
+                  cursor: 'pointer'
+                }}
+              >
+                <ShieldAlert size={14} />
+                <span>Admin Login</span>
+              </button>
+            </div>
           )}
 
         </div>
