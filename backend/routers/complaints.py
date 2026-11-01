@@ -30,6 +30,10 @@ def serialize_complaint(c: dict) -> dict:
     if "_id" in item:
         item["id"] = str(item["_id"])
         item.pop("_id", None)
+    if "image" in item and not item.get("image_url"):
+        item["image_url"] = item["image"]
+    if "submission_date" in item and not item.get("created_at"):
+        item["created_at"] = item["submission_date"].isoformat() if isinstance(item["submission_date"], datetime) else str(item["submission_date"])
     if "created_at" in item and isinstance(item["created_at"], datetime):
         item["created_at"] = item["created_at"].isoformat()
     if "verified_at" in item and isinstance(item["verified_at"], datetime):

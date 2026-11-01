@@ -10,8 +10,8 @@ env_path = Path(__file__).resolve().parent / ".env"
 load_dotenv(dotenv_path=env_path)
 load_dotenv()
 
-MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017/civic_pulse_db")
-DB_NAME = os.getenv("DB_NAME", "civic_pulse_db")
+MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017/pothole_app")
+DB_NAME = os.getenv("DB_NAME", "pothole_app")
 
 # Flag indicating if live MongoDB is connected
 is_live_mongo = False
