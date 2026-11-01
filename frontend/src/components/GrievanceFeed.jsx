@@ -24,6 +24,9 @@ export default function GrievanceFeed({ complaints, onVote, onRefresh, user }) {
   const [selectedFilter, setSelectedFilter] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedId, setExpandedId] = useState(null);
+  const [isBatchRunning, setIsBatchRunning] = useState(false);
+
+  const isAdmin = user?.role === 'admin';
 
   const filterCategories = [
     { id: 'ALL', label: 'All Issues' },
@@ -53,8 +56,79 @@ export default function GrievanceFeed({ complaints, onVote, onRefresh, user }) {
     }
   };
 
+  const handleBatchTriage = async () => {
+    try {
+      setIsBatchRunning(true);
+      await api.triggerAgent(null);
+      await onRefresh();
+    } catch (e) {
+      alert(e.message || 'Error running agent cycle');
+    } finally {
+      setIsBatchRunning(false);
+    }
+  };
+
   return (
     <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '10px 24px 60px' }}>
+      
+      {/* Admin-Only Triage Command Bar */}
+      {isAdmin && (
+        <div style={{
+          backgroundColor: '#020F1C',
+          border: '1px solid #ECB365',
+          borderRadius: '12px',
+          padding: '16px 24px',
+          marginBottom: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '14px',
+          boxShadow: '0 8px 25px rgba(0, 0, 0, 0.4)'
+        }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '16px', fontWeight: '800', color: '#ECB365' }}>
+                🛡️ Municipal Officer Grievance Triage Console
+              </span>
+              <span style={{
+                fontSize: '11px',
+                background: 'rgba(236, 179, 101, 0.2)',
+                color: '#ECB365',
+                padding: '2px 8px',
+                borderRadius: '4px',
+                fontWeight: '700'
+              }}>
+                ADMIN ACTIONS ENABLED
+              </span>
+            </div>
+            <p style={{ fontSize: '13px', color: '#B4EBE6', margin: '4px 0 0', opacity: 0.9 }}>
+              You have administrative authority to inspect AI damage metrics, dispatch tickets to PWD, and mark complaints resolved.
+            </p>
+          </div>
+
+          <button
+            onClick={handleBatchTriage}
+            disabled={isBatchRunning}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '10px 20px',
+              borderRadius: '8px',
+              background: 'linear-gradient(135deg, #ECB365 0%, #D49B45 100%)',
+              color: '#041C32',
+              fontWeight: '800',
+              fontSize: '13px',
+              boxShadow: '0 0 15px rgba(236, 179, 101, 0.35)',
+              opacity: isBatchRunning ? 0.7 : 1
+            }}
+          >
+            <Bot size={16} />
+            {isBatchRunning ? 'Running LangGraph Agent...' : '⚡ Run Autonomous AI Triage'}
+          </button>
+        </div>
+      )}
       
       {/* Search & Filter Header */}
       <div style={{

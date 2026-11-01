@@ -1,7 +1,7 @@
 import React from 'react';
-import { Edit3, Map, Users, CheckCircle2 } from 'lucide-react';
+import { Edit3, Map, Users, CheckCircle2, Bot, ClipboardCheck, BarChart3 } from 'lucide-react';
 
-export default function HeroSection({ onOpenReport, onExploreMap, onGoToCommunity, onGoToStatus }) {
+export default function HeroSection({ isAdmin, onOpenReport, onExploreMap, onGoToCommunity, onGoToStatus, onGoToAgent, onGoToTriage }) {
   return (
     <div style={{
       position: 'relative',
@@ -25,7 +25,7 @@ export default function HeroSection({ onOpenReport, onExploreMap, onGoToCommunit
         textAlign: 'center',
         padding: '0 20px',
         maxWidth: '900px',
-        marginBottom: '80px'
+        marginBottom: '70px'
       }}>
         <h1 style={{
           fontFamily: '"Ubuntu", "Segoe UI", sans-serif',
@@ -49,11 +49,14 @@ export default function HeroSection({ onOpenReport, onExploreMap, onGoToCommunit
           margin: '0 auto',
           fontWeight: '500'
         }}>
-          Intelligent Road Damage &amp; Pothole Redressal Platform powered by Agentic AI
+          {isAdmin 
+            ? 'Municipal Officer Command Portal • Autonomous Pothole Redressal & Field Dispatch'
+            : 'Intelligent Road Damage & Pothole Redressal Platform powered by Agentic AI'
+          }
         </p>
       </div>
 
-      {/* Floating 4 Icon Boxes (from home.html) */}
+      {/* Floating 4 Icon Boxes (Role-Specific) */}
       <div style={{
         position: 'relative',
         width: '100%',
@@ -68,137 +71,277 @@ export default function HeroSection({ onOpenReport, onExploreMap, onGoToCommunit
           justifyContent: 'center'
         }}>
           
-          {/* Box 1: File Complaint */}
-          <div
-            onClick={onOpenReport}
-            style={{
-              backgroundColor: '#064663',
-              padding: '28px 20px',
-              borderRadius: '12px',
-              color: 'white',
-              textAlign: 'center',
-              cursor: 'pointer',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 10px 25px rgba(0, 0, 0, 0.35)',
-              transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.transform = 'translateY(-8px)';
-              e.currentTarget.style.backgroundColor = '#ECB365';
-              e.currentTarget.style.color = '#041C32';
-              const icon = e.currentTarget.querySelector('.box-icon');
-              if (icon) icon.style.color = '#041C32';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.backgroundColor = '#064663';
-              e.currentTarget.style.color = 'white';
-              const icon = e.currentTarget.querySelector('.box-icon');
-              if (icon) icon.style.color = '#ECB365';
-            }}
-          >
-            <Edit3 className="box-icon" size={36} color="#ECB365" style={{ margin: '0 auto 12px', transition: 'color 0.3s' }} />
-            <h3 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>File Complaint</h3>
-          </div>
+          {isAdmin ? (
+            /* ADMIN 4 BOXES */
+            <>
+              {/* Box 1: Admin Triage */}
+              <div
+                onClick={onGoToTriage}
+                style={{
+                  backgroundColor: '#064663',
+                  padding: '28px 20px',
+                  borderRadius: '12px',
+                  color: 'white',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.35)',
+                  transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-8px)';
+                  e.currentTarget.style.backgroundColor = '#ECB365';
+                  e.currentTarget.style.color = '#041C32';
+                  const icon = e.currentTarget.querySelector('.box-icon');
+                  if (icon) icon.style.color = '#041C32';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.backgroundColor = '#064663';
+                  e.currentTarget.style.color = 'white';
+                  const icon = e.currentTarget.querySelector('.box-icon');
+                  if (icon) icon.style.color = '#ECB365';
+                }}
+              >
+                <ClipboardCheck className="box-icon" size={36} color="#ECB365" style={{ margin: '0 auto 12px', transition: 'color 0.3s' }} />
+                <h3 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>Grievance Triage</h3>
+              </div>
 
-          {/* Box 2: View on Map */}
-          <div
-            onClick={onExploreMap}
-            style={{
-              backgroundColor: '#064663',
-              padding: '28px 20px',
-              borderRadius: '12px',
-              color: 'white',
-              textAlign: 'center',
-              cursor: 'pointer',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 10px 25px rgba(0, 0, 0, 0.35)',
-              transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.transform = 'translateY(-8px)';
-              e.currentTarget.style.backgroundColor = '#ECB365';
-              e.currentTarget.style.color = '#041C32';
-              const icon = e.currentTarget.querySelector('.box-icon');
-              if (icon) icon.style.color = '#041C32';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.backgroundColor = '#064663';
-              e.currentTarget.style.color = 'white';
-              const icon = e.currentTarget.querySelector('.box-icon');
-              if (icon) icon.style.color = '#ECB365';
-            }}
-          >
-            <Map className="box-icon" size={36} color="#ECB365" style={{ margin: '0 auto 12px', transition: 'color 0.3s' }} />
-            <h3 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>View on Map</h3>
-          </div>
+              {/* Box 2: View on Map */}
+              <div
+                onClick={onExploreMap}
+                style={{
+                  backgroundColor: '#064663',
+                  padding: '28px 20px',
+                  borderRadius: '12px',
+                  color: 'white',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.35)',
+                  transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-8px)';
+                  e.currentTarget.style.backgroundColor = '#ECB365';
+                  e.currentTarget.style.color = '#041C32';
+                  const icon = e.currentTarget.querySelector('.box-icon');
+                  if (icon) icon.style.color = '#041C32';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.backgroundColor = '#064663';
+                  e.currentTarget.style.color = 'white';
+                  const icon = e.currentTarget.querySelector('.box-icon');
+                  if (icon) icon.style.color = '#ECB365';
+                }}
+              >
+                <Map className="box-icon" size={36} color="#ECB365" style={{ margin: '0 auto 12px', transition: 'color 0.3s' }} />
+                <h3 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>View on Map</h3>
+              </div>
 
-          {/* Box 3: Community */}
-          <div
-            onClick={onGoToCommunity}
-            style={{
-              backgroundColor: '#064663',
-              padding: '28px 20px',
-              borderRadius: '12px',
-              color: 'white',
-              textAlign: 'center',
-              cursor: 'pointer',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 10px 25px rgba(0, 0, 0, 0.35)',
-              transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.transform = 'translateY(-8px)';
-              e.currentTarget.style.backgroundColor = '#ECB365';
-              e.currentTarget.style.color = '#041C32';
-              const icon = e.currentTarget.querySelector('.box-icon');
-              if (icon) icon.style.color = '#041C32';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.backgroundColor = '#064663';
-              e.currentTarget.style.color = 'white';
-              const icon = e.currentTarget.querySelector('.box-icon');
-              if (icon) icon.style.color = '#ECB365';
-            }}
-          >
-            <Users className="box-icon" size={36} color="#ECB365" style={{ margin: '0 auto 12px', transition: 'color 0.3s' }} />
-            <h3 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>Community</h3>
-          </div>
+              {/* Box 3: SLA Analytics */}
+              <div
+                onClick={onGoToStatus}
+                style={{
+                  backgroundColor: '#064663',
+                  padding: '28px 20px',
+                  borderRadius: '12px',
+                  color: 'white',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.35)',
+                  transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-8px)';
+                  e.currentTarget.style.backgroundColor = '#ECB365';
+                  e.currentTarget.style.color = '#041C32';
+                  const icon = e.currentTarget.querySelector('.box-icon');
+                  if (icon) icon.style.color = '#041C32';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.backgroundColor = '#064663';
+                  e.currentTarget.style.color = 'white';
+                  const icon = e.currentTarget.querySelector('.box-icon');
+                  if (icon) icon.style.color = '#ECB365';
+                }}
+              >
+                <BarChart3 className="box-icon" size={36} color="#ECB365" style={{ margin: '0 auto 12px', transition: 'color 0.3s' }} />
+                <h3 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>SLA Analytics</h3>
+              </div>
 
-          {/* Box 4: Complaint Status */}
-          <div
-            onClick={onGoToStatus}
-            style={{
-              backgroundColor: '#064663',
-              padding: '28px 20px',
-              borderRadius: '12px',
-              color: 'white',
-              textAlign: 'center',
-              cursor: 'pointer',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 10px 25px rgba(0, 0, 0, 0.35)',
-              transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.transform = 'translateY(-8px)';
-              e.currentTarget.style.backgroundColor = '#ECB365';
-              e.currentTarget.style.color = '#041C32';
-              const icon = e.currentTarget.querySelector('.box-icon');
-              if (icon) icon.style.color = '#041C32';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.backgroundColor = '#064663';
-              e.currentTarget.style.color = 'white';
-              const icon = e.currentTarget.querySelector('.box-icon');
-              if (icon) icon.style.color = '#ECB365';
-            }}
-          >
-            <CheckCircle2 className="box-icon" size={36} color="#ECB365" style={{ margin: '0 auto 12px', transition: 'color 0.3s' }} />
-            <h3 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>Complaint Status</h3>
-          </div>
+              {/* Box 4: LangGraph Agent */}
+              <div
+                onClick={onGoToAgent}
+                style={{
+                  backgroundColor: '#064663',
+                  padding: '28px 20px',
+                  borderRadius: '12px',
+                  color: 'white',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.35)',
+                  transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-8px)';
+                  e.currentTarget.style.backgroundColor = '#ECB365';
+                  e.currentTarget.style.color = '#041C32';
+                  const icon = e.currentTarget.querySelector('.box-icon');
+                  if (icon) icon.style.color = '#041C32';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.backgroundColor = '#064663';
+                  e.currentTarget.style.color = 'white';
+                  const icon = e.currentTarget.querySelector('.box-icon');
+                  if (icon) icon.style.color = '#ECB365';
+                }}
+              >
+                <Bot className="box-icon" size={36} color="#ECB365" style={{ margin: '0 auto 12px', transition: 'color 0.3s' }} />
+                <h3 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>LangGraph Agent</h3>
+              </div>
+            </>
+          ) : (
+            /* CITIZEN 4 BOXES */
+            <>
+              {/* Box 1: File Complaint */}
+              <div
+                onClick={onOpenReport}
+                style={{
+                  backgroundColor: '#064663',
+                  padding: '28px 20px',
+                  borderRadius: '12px',
+                  color: 'white',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.35)',
+                  transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-8px)';
+                  e.currentTarget.style.backgroundColor = '#ECB365';
+                  e.currentTarget.style.color = '#041C32';
+                  const icon = e.currentTarget.querySelector('.box-icon');
+                  if (icon) icon.style.color = '#041C32';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.backgroundColor = '#064663';
+                  e.currentTarget.style.color = 'white';
+                  const icon = e.currentTarget.querySelector('.box-icon');
+                  if (icon) icon.style.color = '#ECB365';
+                }}
+              >
+                <Edit3 className="box-icon" size={36} color="#ECB365" style={{ margin: '0 auto 12px', transition: 'color 0.3s' }} />
+                <h3 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>File Complaint</h3>
+              </div>
+
+              {/* Box 2: View on Map */}
+              <div
+                onClick={onExploreMap}
+                style={{
+                  backgroundColor: '#064663',
+                  padding: '28px 20px',
+                  borderRadius: '12px',
+                  color: 'white',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.35)',
+                  transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-8px)';
+                  e.currentTarget.style.backgroundColor = '#ECB365';
+                  e.currentTarget.style.color = '#041C32';
+                  const icon = e.currentTarget.querySelector('.box-icon');
+                  if (icon) icon.style.color = '#041C32';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.backgroundColor = '#064663';
+                  e.currentTarget.style.color = 'white';
+                  const icon = e.currentTarget.querySelector('.box-icon');
+                  if (icon) icon.style.color = '#ECB365';
+                }}
+              >
+                <Map className="box-icon" size={36} color="#ECB365" style={{ margin: '0 auto 12px', transition: 'color 0.3s' }} />
+                <h3 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>View on Map</h3>
+              </div>
+
+              {/* Box 3: Community */}
+              <div
+                onClick={onGoToCommunity}
+                style={{
+                  backgroundColor: '#064663',
+                  padding: '28px 20px',
+                  borderRadius: '12px',
+                  color: 'white',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.35)',
+                  transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-8px)';
+                  e.currentTarget.style.backgroundColor = '#ECB365';
+                  e.currentTarget.style.color = '#041C32';
+                  const icon = e.currentTarget.querySelector('.box-icon');
+                  if (icon) icon.style.color = '#041C32';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.backgroundColor = '#064663';
+                  e.currentTarget.style.color = 'white';
+                  const icon = e.currentTarget.querySelector('.box-icon');
+                  if (icon) icon.style.color = '#ECB365';
+                }}
+              >
+                <Users className="box-icon" size={36} color="#ECB365" style={{ margin: '0 auto 12px', transition: 'color 0.3s' }} />
+                <h3 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>Community</h3>
+              </div>
+
+              {/* Box 4: My Complaints */}
+              <div
+                onClick={onGoToStatus}
+                style={{
+                  backgroundColor: '#064663',
+                  padding: '28px 20px',
+                  borderRadius: '12px',
+                  color: 'white',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.35)',
+                  transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-8px)';
+                  e.currentTarget.style.backgroundColor = '#ECB365';
+                  e.currentTarget.style.color = '#041C32';
+                  const icon = e.currentTarget.querySelector('.box-icon');
+                  if (icon) icon.style.color = '#041C32';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.backgroundColor = '#064663';
+                  e.currentTarget.style.color = 'white';
+                  const icon = e.currentTarget.querySelector('.box-icon');
+                  if (icon) icon.style.color = '#ECB365';
+                }}
+              >
+                <CheckCircle2 className="box-icon" size={36} color="#ECB365" style={{ margin: '0 auto 12px', transition: 'color 0.3s' }} />
+                <h3 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>My Complaints</h3>
+              </div>
+            </>
+          )}
 
         </div>
       </div>
