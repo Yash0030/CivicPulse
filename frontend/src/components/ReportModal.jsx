@@ -185,11 +185,11 @@ export default function ReportModal({ isOpen, onClose, onSuccess }) {
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
           <div>
-            <h2 style={{ fontSize: '22px', fontWeight: '800', color: '#f8fafc' }}>
-              Report Localized Civic Grievance
+            <h2 style={{ fontSize: '22px', fontWeight: '800', color: '#ffffff' }}>
+              File Complaint | <span style={{ color: '#ECB365' }}>fixmycity™</span>
             </h2>
-            <p style={{ fontSize: '13px', color: '#94a3b8', margin: '4px 0 0' }}>
-              Multimodal verification &amp; autonomous municipal triage
+            <p style={{ fontSize: '13px', color: '#B4EBE6', margin: '4px 0 0', opacity: 0.85 }}>
+              See it, Snap it, Solve it • AI Pothole Detection &amp; Bureaucracy Redressal
             </p>
           </div>
           <button
