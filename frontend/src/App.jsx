@@ -86,21 +86,27 @@ export default function App() {
       {/* Hero Section displayed on feed/home */}
       {activeTab === 'feed' && (
         <HeroSection
-          summary={summary}
-          onCategorySelect={handleCategorySelect}
           onOpenReport={() => setIsReportOpen(true)}
+          onExploreMap={() => setActiveTab('map')}
+          onGoToCommunity={() => {
+            const el = document.getElementById('community-feed-section');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }}
+          onGoToStatus={() => setActiveTab('analytics')}
         />
       )}
 
       {/* Main Tab Views */}
       <main style={{ flex: 1 }}>
         {activeTab === 'feed' && (
-          <GrievanceFeed
-            complaints={complaints}
-            onVote={handleVote}
-            onRefresh={loadData}
-            user={user}
-          />
+          <div id="community-feed-section">
+            <GrievanceFeed
+              complaints={complaints}
+              onVote={handleVote}
+              onRefresh={loadData}
+              user={user}
+            />
+          </div>
         )}
 
         {activeTab === 'map' && (

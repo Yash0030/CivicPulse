@@ -1,184 +1,181 @@
 import React from 'react';
-import { MapPin, Activity, Bot, PlusCircle, User, LogOut, CheckCircle } from 'lucide-react';
+import { User, LogOut } from 'lucide-react';
 
 export default function Navbar({ activeTab, setActiveTab, onOpenReport, user, onOpenAuth, onLogout }) {
   return (
-    <nav className="glass-nav" style={{ position: 'sticky', top: 0, zIndex: 1000, padding: '14px 28px' }}>
-      <div style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    <header style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 999,
+      backgroundColor: 'rgba(4, 28, 50, 0.92)',
+      backdropFilter: 'blur(10px)',
+      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+      borderBottom: '1px solid rgba(180, 235, 230, 0.1)',
+      padding: '14px 32px',
+      transition: 'all 0.3s ease'
+    }}>
+      <div style={{
+        maxWidth: '1400px',
+        margin: '0 auto',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+      }}>
         
-        {/* fixmycity™ Brand Logo */}
+        {/* fixmycity™ Logo */}
         <div 
-          onClick={() => setActiveTab('feed')} 
-          style={{ display: 'flex', alignItems: 'center', gap: '14px', cursor: 'pointer' }}
+          onClick={() => setActiveTab('feed')}
+          style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
         >
-          <div style={{
-            width: '42px',
-            height: '42px',
-            borderRadius: '12px',
-            background: 'linear-gradient(135deg, #ECB365 0%, #041C32 100%)',
-            border: '1px solid rgba(236, 179, 101, 0.4)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 0 20px rgba(236, 179, 101, 0.3)'
-          }}>
-            <span style={{ fontSize: '20px', fontWeight: '900', color: '#ECB365' }}>🛣</span>
-          </div>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '22px', fontWeight: '800', letterSpacing: '-0.02em', color: '#ffffff' }}>
-                fix<span style={{ color: '#ECB365' }}>mycity</span><span style={{ fontSize: '13px', verticalAlign: 'super', color: '#ECB365' }}>™</span>
-              </span>
-              <span style={{
-                fontSize: '10px',
-                padding: '2px 8px',
-                borderRadius: '6px',
-                background: 'rgba(236, 179, 101, 0.15)',
-                color: '#ECB365',
-                border: '1px solid rgba(236, 179, 101, 0.3)',
-                fontWeight: '700',
-                letterSpacing: '0.05em'
-              }}>
-                AGENTIC AI
-              </span>
-            </div>
-            <p style={{ fontSize: '11px', color: '#B4EBE6', opacity: 0.8, margin: 0 }}>
-              AI Pothole Detection &amp; Smart Road Redressal
-            </p>
-          </div>
+          <span style={{ fontSize: '32px', fontWeight: '800', color: '#ffffff', letterSpacing: '0.5px' }}>
+            fix<span style={{ color: '#FFC107' }}>mycity</span><span style={{ fontSize: '16px', color: '#FFC107', verticalAlign: 'super' }}>™</span>
+          </span>
         </div>
 
-        {/* Navigation Tabs */}
-        <div style={{
-          display: 'flex',
-          background: 'rgba(2, 15, 28, 0.85)',
-          padding: '4px',
-          borderRadius: '12px',
-          border: '1px solid rgba(180, 235, 230, 0.12)'
-        }}>
+        {/* Navigation Menu */}
+        <nav style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
           {[
-            { id: 'feed', label: 'Community Feed', icon: Activity },
-            { id: 'map', label: 'View On Map', icon: MapPin },
-            { id: 'analytics', label: 'Transparency SLA', icon: CheckCircle },
-            { id: 'agent', label: 'AI Agent Console', icon: Bot },
-          ].map(tab => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
+            { id: 'feed', label: 'Home' },
+            { id: 'community', label: 'Community' },
+            { id: 'map', label: 'View on Map' },
+            { id: 'analytics', label: 'Complaint Status' },
+            { id: 'agent', label: 'AI Agent' }
+          ].map(item => {
+            const isActive = activeTab === (item.id === 'community' ? 'feed' : item.id);
             return (
               <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                key={item.id}
+                onClick={() => {
+                  if (item.id === 'community') {
+                    setActiveTab('feed');
+                    setTimeout(() => {
+                      const el = document.getElementById('community-feed-section');
+                      if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  } else {
+                    setActiveTab(item.id);
+                  }
+                }}
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '8px 16px',
-                  borderRadius: '8px',
-                  fontSize: '13px',
+                  background: 'transparent',
+                  color: isActive ? '#ECB365' : '#F5F5F5',
+                  fontSize: '16px',
                   fontWeight: isActive ? '700' : '500',
-                  color: isActive ? '#041C32' : '#F5F5F5',
-                  background: isActive ? 'linear-gradient(135deg, #ECB365, #F2D093)' : 'transparent',
-                  border: isActive ? '1px solid #ECB365' : '1px solid transparent',
-                  boxShadow: isActive ? '0 0 16px rgba(236, 179, 101, 0.35)' : 'none'
+                  padding: '6px 0',
+                  position: 'relative',
+                  transition: 'color 0.25s ease'
+                }}
+                onMouseEnter={e => e.currentTarget.style.color = '#ECB365'}
+                onMouseLeave={e => {
+                  if (!isActive) e.currentTarget.style.color = '#F5F5F5';
                 }}
               >
-                <Icon size={16} color={isActive ? '#041C32' : '#B4EBE6'} />
-                {tab.label}
+                {item.label}
+                {isActive && (
+                  <span style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: '2px',
+                    background: '#ECB365',
+                    borderRadius: '2px'
+                  }} />
+                )}
               </button>
             );
           })}
-        </div>
+        </nav>
 
-        {/* Action Buttons */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <button
-            onClick={onOpenReport}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '10px 20px',
-              borderRadius: '10px',
-              background: 'linear-gradient(135deg, #ECB365 0%, #D49B45 100%)',
-              color: '#041C32',
-              fontSize: '13px',
-              fontWeight: '700',
-              boxShadow: '0 0 20px rgba(236, 179, 101, 0.35)',
-            }}
-          >
-            <PlusCircle size={16} color="#041C32" />
-            File Complaint
-          </button>
-
+        {/* Auth Button Group */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           {user ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                padding: '6px 14px',
-                borderRadius: '8px',
-                background: 'rgba(2, 15, 28, 0.8)',
-                border: '1px solid rgba(180, 235, 230, 0.2)',
-                fontSize: '12px'
+                padding: '8px 16px',
+                borderRadius: '6px',
+                border: '2px solid #ECB365',
+                color: '#ffffff',
+                fontSize: '14px',
+                fontWeight: '600'
               }}>
-                <div style={{
-                  width: '8px',
-                  height: '8px',
-                  borderRadius: '50%',
-                  background: user.role === 'admin' ? '#ECB365' : '#10b981'
-                }} />
-                <span style={{ color: '#F5F5F5', fontWeight: '600' }}>
-                  {user.first_name || user.email.split('@')[0]}
-                </span>
-                <span style={{
-                  fontSize: '10px',
-                  padding: '2px 6px',
-                  borderRadius: '4px',
-                  background: user.role === 'admin' ? 'rgba(236, 179, 101, 0.2)' : 'rgba(16, 185, 129, 0.2)',
-                  color: user.role === 'admin' ? '#ECB365' : '#34d399',
-                  fontWeight: '700'
-                }}>
-                  {user.role}
-                </span>
+                <User size={16} color="#ECB365" />
+                <span>{user.first_name || user.email.split('@')[0]}</span>
               </div>
               <button
                 onClick={onLogout}
                 title="Logout"
                 style={{
-                  padding: '8px 10px',
-                  borderRadius: '8px',
-                  background: 'rgba(239, 68, 68, 0.12)',
+                  padding: '10px 14px',
+                  borderRadius: '6px',
+                  border: '1px solid rgba(239, 68, 68, 0.4)',
+                  background: 'rgba(239, 68, 68, 0.15)',
                   color: '#f87171',
-                  border: '1px solid rgba(239, 68, 68, 0.25)'
+                  fontWeight: '600',
+                  fontSize: '13px'
                 }}
               >
                 <LogOut size={16} />
               </button>
             </div>
           ) : (
-            <button
-              onClick={onOpenAuth}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '9px 16px',
-                borderRadius: '8px',
-                background: 'rgba(180, 235, 230, 0.08)',
-                border: '1px solid rgba(180, 235, 230, 0.25)',
-                color: '#B4EBE6',
-                fontSize: '13px',
-                fontWeight: '600'
-              }}
-            >
-              <User size={15} color="#B4EBE6" />
-              Login / Register
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <button
+                onClick={onOpenAuth}
+                style={{
+                  border: '2px solid #ECB365',
+                  padding: '8px 22px',
+                  color: '#ffffff',
+                  backgroundColor: 'transparent',
+                  borderRadius: '6px',
+                  fontWeight: '600',
+                  fontSize: '16px',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.backgroundColor = '#ECB365';
+                  e.currentTarget.style.color = '#041C32';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.color = '#ffffff';
+                }}
+              >
+                Register
+              </button>
+              <button
+                onClick={onOpenAuth}
+                style={{
+                  border: '2px solid #ECB365',
+                  padding: '8px 22px',
+                  color: '#ffffff',
+                  backgroundColor: 'transparent',
+                  borderRadius: '6px',
+                  fontWeight: '600',
+                  fontSize: '16px',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.backgroundColor = '#ECB365';
+                  e.currentTarget.style.color = '#041C32';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.color = '#ffffff';
+                }}
+              >
+                Login
+              </button>
+            </div>
           )}
         </div>
 
       </div>
-    </nav>
+    </header>
   );
 }
