@@ -1,7 +1,6 @@
-import React from 'react';
-import { Edit3, Map, Users, CheckCircle2, Bot, ClipboardCheck, BarChart3 } from 'lucide-react';
+import { Edit3, Map, Users, CheckCircle2, Bot, ClipboardCheck, BarChart3, Network } from 'lucide-react';
 
-export default function HeroSection({ isAdmin, onOpenReport, onExploreMap, onGoToCommunity, onGoToStatus, onGoToAgent, onGoToTriage }) {
+export default function HeroSection({ isAdmin, onOpenReport, onExploreMap, onGoToCommunity, onGoToStatus, onGoToAgent, onGoToTriage, onGoToWebGraph }) {
   return (
     <div style={{
       position: 'relative',
@@ -140,9 +139,9 @@ export default function HeroSection({ isAdmin, onOpenReport, onExploreMap, onGoT
                 <h3 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>View on Map</h3>
               </div>
 
-              {/* Box 3: SLA Analytics */}
+              {/* Box 3: Web Graph & BI Analytics */}
               <div
-                onClick={onGoToStatus}
+                onClick={onGoToWebGraph || onGoToStatus}
                 style={{
                   backgroundColor: '#064663',
                   padding: '28px 20px',
@@ -169,8 +168,8 @@ export default function HeroSection({ isAdmin, onOpenReport, onExploreMap, onGoT
                   if (icon) icon.style.color = '#ECB365';
                 }}
               >
-                <BarChart3 className="box-icon" size={36} color="#ECB365" style={{ margin: '0 auto 12px', transition: 'color 0.3s' }} />
-                <h3 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>SLA Analytics</h3>
+                <Network className="box-icon" size={36} color="#ECB365" style={{ margin: '0 auto 12px', transition: 'color 0.3s' }} />
+                <h3 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>Web Graph &amp; BI</h3>
               </div>
 
               {/* Box 4: LangGraph Agent */}

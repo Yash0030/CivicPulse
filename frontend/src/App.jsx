@@ -6,12 +6,13 @@ import CivicMap from './components/CivicMap';
 import TransparencyDashboard from './components/TransparencyDashboard';
 import AgentCommandCenter from './components/AgentCommandCenter';
 import CitizenStatus from './components/CitizenStatus';
+import AdminAnalyticsDashboard from './components/AdminAnalyticsDashboard';
 import ReportModal from './components/ReportModal';
 import AuthModal from './components/AuthModal';
 import { api, getStoredUser } from './api';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('feed'); // 'feed' | 'map' | 'analytics' | 'agent' | 'my_status'
+  const [activeTab, setActiveTab] = useState('feed'); // 'feed' | 'map' | 'analytics' | 'agent' | 'my_status' | 'admin_analytics'
   const [complaints, setComplaints] = useState([]);
   const [summary, setSummary] = useState(null);
   const [user, setUser] = useState(getStoredUser());
@@ -124,6 +125,7 @@ export default function App() {
           }}
           onGoToStatus={() => setActiveTab(isAdmin ? 'analytics' : 'my_status')}
           onGoToAgent={() => setActiveTab('agent')}
+          onGoToWebGraph={() => setActiveTab('admin_analytics')}
           onGoToTriage={() => {
             const el = document.getElementById('community-feed-section');
             if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -170,6 +172,37 @@ export default function App() {
             <TransparencyDashboard
               summary={summary}
             />
+          </div>
+        )}
+
+        {/* Admin Advanced Web Graph & BI Dashboard (Officer Only) */}
+        {activeTab === 'admin_analytics' && (
+          <div style={{ paddingTop: '80px' }}>
+            {isAdmin ? (
+              <AdminAnalyticsDashboard
+                complaints={complaints}
+                summary={summary}
+                onRunAgent={() => setActiveTab('agent')}
+              />
+            ) : (
+              <div style={{ maxWidth: '600px', margin: '120px auto', textAlign: 'center', color: '#f87171' }}>
+                <h3>Access Restricted</h3>
+                <p>The Executive Web Graph &amp; Network BI Dashboard is reserved for Municipal Nodal Officers.</p>
+                <button
+                  onClick={handleSwitchRole}
+                  style={{
+                    padding: '10px 20px',
+                    borderRadius: '8px',
+                    backgroundColor: '#ECB365',
+                    color: '#041C32',
+                    fontWeight: '700',
+                    marginTop: '16px'
+                  }}
+                >
+                  Switch to Officer Mode
+                </button>
+              </div>
+            )}
           </div>
         )}
 

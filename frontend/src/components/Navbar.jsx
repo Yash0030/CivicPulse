@@ -16,6 +16,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenReport, user, on
     { id: 'feed', label: 'Home' },
     { id: 'feed_table', label: 'Admin Triage' },
     { id: 'map', label: 'View on Map' },
+    { id: 'admin_analytics', label: '🕸️ Web Graph & BI' },
     { id: 'analytics', label: 'SLA Ledger' },
     { id: 'agent', label: 'LangGraph Agent Lab' },
   ];
