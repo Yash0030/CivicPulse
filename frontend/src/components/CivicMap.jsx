@@ -1,20 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
-import { ThumbsUp, AlertTriangle, Clock, MapPin } from 'lucide-react';
+import 'leaflet/dist/leaflet.css';
+import { ThumbsUp, AlertTriangle, Clock, MapPin, Layers } from 'lucide-react';
 import { api } from '../api';
 
+// Fix for default Leaflet marker icon in Vite/bundlers
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+});
+
 const categoryColors = {
-  ROADS_PAVEMENT: '#f59e0b',
+  ROADS_PAVEMENT: '#ECB365', // Amber gold
   SANITATION_WASTE: '#10b981',
-  WATER_DRAINAGE: '#06b6d4',
+  WATER_DRAINAGE: '#B4EBE6',
   ELECTRICAL_HAZARD: '#ef4444',
-  PUBLIC_SAFETY: '#8b5cf6',
-  ENVIRONMENTAL: '#14b8a6'
+  PUBLIC_SAFETY: '#a78bfa',
+  ENVIRONMENTAL: '#34d399'
 };
 
 const createCustomIcon = (category, severity) => {
-  const color = categoryColors[category] || '#38bdf8';
+  const color = categoryColors[category] || '#ECB365';
   const isCritical = severity === 'CRITICAL';
   
   return L.divIcon({
@@ -29,10 +38,10 @@ const createCustomIcon = (category, severity) => {
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 0 ${isCritical ? '20px #ef4444' : '10px ' + color};
-        animation: ${isCritical ? 'pulseGlow 1.5s infinite' : 'none'};
+        box-shadow: 0 0 ${isCritical ? '20px #ef4444' : '12px ' + color};
+        cursor: pointer;
       ">
-        <div style="width: 10px; height: 10px; background: #ffffff; border-radius: 50%;"></div>
+        <div style="width: 10px; height: 10px; background: #041C32; border-radius: 50%;"></div>
       </div>
     `,
     iconSize: [32, 32],
@@ -45,6 +54,7 @@ export default function CivicMap({ onVote, user }) {
   const [markers, setMarkers] = useState([]);
   const [selectedCat, setSelectedCat] = useState('ALL');
   const [loading, setLoading] = useState(true);
+  const [mapTheme, setMapTheme] = useState('osm'); // 'osm' | 'dark'
 
   const fetchMarkers = async () => {
     try {
@@ -66,7 +76,7 @@ export default function CivicMap({ onVote, user }) {
   const defaultCenter = [28.6189, 77.2140];
 
   return (
-    <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '10px 24px 60px' }}>
+    <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '100px 24px 60px' }}>
       
       {/* Map Control Bar */}
       <div style={{
@@ -74,58 +84,91 @@ export default function CivicMap({ onVote, user }) {
         alignItems: 'center',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
-        gap: '12px',
-        marginBottom: '16px'
+        gap: '14px',
+        marginBottom: '20px'
       }}>
         <div>
-          <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#f8fafc' }}>
-            Interactive Civic Infrastructure Heatmap
+          <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span>🗺️</span> View on Map | <span style={{ color: '#ECB365' }}>fixmycity™</span>
           </h2>
-          <p style={{ fontSize: '13px', color: '#94a3b8', margin: 0 }}>
-            Geospatial tracking of verified civic grievances and municipal response zones
+          <p style={{ fontSize: '13px', color: '#B4EBE6', margin: '4px 0 0', opacity: 0.85 }}>
+            Geospatial tracking of verified road damage, potholes, and municipal response zones
           </p>
         </div>
 
-        {/* Category Filters */}
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          {['ALL', 'ROADS_PAVEMENT', 'SANITATION_WASTE', 'WATER_DRAINAGE', 'ELECTRICAL_HAZARD'].map(cat => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCat(cat)}
-              style={{
-                padding: '6px 12px',
-                borderRadius: '8px',
-                fontSize: '11px',
-                fontWeight: selectedCat === cat ? '700' : '500',
-                background: selectedCat === cat ? 'rgba(6, 182, 212, 0.25)' : 'rgba(255, 255, 255, 0.05)',
-                border: selectedCat === cat ? '1px solid #06b6d4' : '1px solid rgba(255, 255, 255, 0.08)',
-                color: selectedCat === cat ? '#38bdf8' : '#94a3b8'
-              }}
-            >
-              {cat === 'ALL' ? 'All Markers' : cat.replace('_', ' ')}
-            </button>
-          ))}
+        {/* Category Filters & Theme Switcher */}
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+            {['ALL', 'ROADS_PAVEMENT', 'SANITATION_WASTE', 'WATER_DRAINAGE', 'ELECTRICAL_HAZARD'].map(cat => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCat(cat)}
+                style={{
+                  padding: '7px 14px',
+                  borderRadius: '8px',
+                  fontSize: '12px',
+                  fontWeight: selectedCat === cat ? '700' : '500',
+                  background: selectedCat === cat ? '#ECB365' : 'rgba(255, 255, 255, 0.06)',
+                  border: selectedCat === cat ? '1px solid #ECB365' : '1px solid rgba(180, 235, 230, 0.2)',
+                  color: selectedCat === cat ? '#041C32' : '#F5F5F5'
+                }}
+              >
+                {cat === 'ALL' ? 'All Issues' : cat.replace('_', ' ')}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={() => setMapTheme(mapTheme === 'osm' ? 'dark' : 'osm')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '7px 14px',
+              borderRadius: '8px',
+              background: 'rgba(180, 235, 230, 0.12)',
+              border: '1px solid rgba(180, 235, 230, 0.3)',
+              color: '#B4EBE6',
+              fontSize: '12px',
+              fontWeight: '600'
+            }}
+          >
+            <Layers size={14} />
+            {mapTheme === 'osm' ? 'Standard Map' : 'Dark Carto'}
+          </button>
         </div>
       </div>
 
       {/* Map Card */}
       <div style={{
         height: '620px',
-        borderRadius: '18px',
+        width: '100%',
+        borderRadius: '16px',
         overflow: 'hidden',
-        border: '1px solid rgba(255, 255, 255, 0.12)',
-        boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
-        position: 'relative'
+        border: '1px solid rgba(180, 235, 230, 0.25)',
+        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.5)',
+        position: 'relative',
+        backgroundColor: '#041C32'
       }}>
         <MapContainer
           center={defaultCenter}
           zoom={13}
-          style={{ width: '100%', height: '100%' }}
+          style={{ width: '100%', height: '100%', minHeight: '620px' }}
         >
-          <TileLayer
-            attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-          />
+          {mapTheme === 'osm' ? (
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              maxZoom={19}
+            />
+          ) : (
+            <TileLayer
+              attribution='&copy; <a href="https://carto.com/">CARTO</a>'
+              url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+              subdomains="abcd"
+              maxZoom={19}
+            />
+          )}
 
           {markers.map(m => {
             if (!m.latitude || !m.longitude) return null;
@@ -134,7 +177,7 @@ export default function CivicMap({ onVote, user }) {
             return (
               <Marker key={m.id} position={[m.latitude, m.longitude]} icon={icon}>
                 <Popup>
-                  <div style={{ width: '240px', padding: '4px' }}>
+                  <div style={{ width: '250px', padding: '6px' }}>
                     {m.image_url && (
                       <img
                         src={m.image_url}
@@ -144,76 +187,40 @@ export default function CivicMap({ onVote, user }) {
                     )}
                     <div style={{
                       display: 'inline-block',
-                      padding: '2px 6px',
-                      borderRadius: '4px',
-                      background: m.severity === 'CRITICAL' ? '#ef4444' : '#f59e0b',
-                      color: '#ffffff',
                       fontSize: '10px',
                       fontWeight: '700',
+                      padding: '2px 6px',
+                      borderRadius: '4px',
+                      background: m.severity === 'CRITICAL' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(236, 179, 101, 0.2)',
+                      color: m.severity === 'CRITICAL' ? '#ef4444' : '#ECB365',
                       marginBottom: '6px'
                     }}>
-                      {m.severity} • {m.severity_score}/100
+                      {m.severity} ({m.severity_score}/100)
                     </div>
-
-                    <h4 style={{ fontSize: '14px', fontWeight: '700', color: '#f8fafc', margin: '0 0 6px 0' }}>
+                    <h4 style={{ fontSize: '14px', fontWeight: '700', margin: '0 0 6px', color: '#ffffff' }}>
                       {m.title}
                     </h4>
-
-                    <p style={{ fontSize: '11px', color: '#94a3b8', margin: '0 0 8px 0', lineHeight: 1.4 }}>
-                      {m.department}
+                    <p style={{ fontSize: '11px', color: '#B4EBE6', margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <MapPin size={11} color="#ECB365" />
+                      {m.address}
                     </p>
-
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '8px' }}>
-                      <span style={{ fontSize: '11px', color: '#38bdf8', fontWeight: '600' }}>
-                        Priority #{m.priority}
-                      </span>
-                      <button
-                        onClick={() => onVote(m.id, 'up')}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '4px',
-                          padding: '4px 8px',
-                          borderRadius: '6px',
-                          background: 'rgba(16, 185, 129, 0.2)',
-                          color: '#34d399',
-                          border: '1px solid rgba(16, 185, 129, 0.4)',
-                          fontSize: '11px'
-                        }}
-                      >
-                        <ThumbsUp size={11} /> {m.upvotes || 0}
-                      </button>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+                      paddingTop: '6px',
+                      fontSize: '11px'
+                    }}>
+                      <span style={{ color: '#10b981', fontWeight: '600' }}>{m.status?.replace('_', ' ')}</span>
+                      <span style={{ color: '#ECB365', fontWeight: '700' }}>Priority #{m.priority}</span>
                     </div>
-
                   </div>
                 </Popup>
               </Marker>
             );
           })}
         </MapContainer>
-
-        {/* Map Legend */}
-        <div style={{
-          position: 'absolute',
-          bottom: '20px',
-          right: '20px',
-          background: 'rgba(15, 23, 42, 0.9)',
-          backdropFilter: 'blur(10px)',
-          padding: '12px 16px',
-          borderRadius: '12px',
-          border: '1px solid rgba(255, 255, 255, 0.12)',
-          zIndex: 1000,
-          fontSize: '11px'
-        }}>
-          <strong style={{ display: 'block', color: '#f8fafc', marginBottom: '8px' }}>Hazard Categories</strong>
-          {Object.entries(categoryColors).map(([k, color]) => (
-            <div key={k} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-              <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: color }} />
-              <span style={{ color: '#cbd5e1' }}>{k.replace('_', ' ')}</span>
-            </div>
-          ))}
-        </div>
-
       </div>
 
     </div>
