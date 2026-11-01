@@ -18,6 +18,7 @@ export default function App() {
   const [user, setUser] = useState(getStoredUser());
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authPortal, setAuthPortal] = useState('citizen'); // 'citizen' | 'admin'
   const [loading, setLoading] = useState(true);
 
   const isAdmin = user?.role === 'admin';
@@ -45,6 +46,7 @@ export default function App() {
   const handleVote = async (complaintId, voteType) => {
     try {
       if (!user) {
+        setAuthPortal('citizen');
         setIsAuthOpen(true);
         return;
       }
@@ -72,30 +74,32 @@ export default function App() {
     setActiveTab('feed');
   };
 
-  // Instant 1-Click Role Switcher for live testing
+  const handleOpenAdminAuth = () => {
+    setAuthPortal('admin');
+    setIsAuthOpen(true);
+  };
+
+  const handleOpenCitizenAuth = () => {
+    setAuthPortal('citizen');
+    setIsAuthOpen(true);
+  };
+
+  // Secure Role Switcher: To access Admin side, credentials are REQUIRED
   const handleSwitchRole = () => {
     if (isAdmin) {
-      // Switch to Citizen
+      // Allow previewing citizen view
       const citizenUser = {
         id: 'citizen-demo-id',
         email: 'citizen.demo@civicpulse.org',
         role: 'citizen',
-        first_name: 'Citizen Demo'
+        first_name: 'Citizen'
       };
       localStorage.setItem('civic_user', JSON.stringify(citizenUser));
       setUser(citizenUser);
       setActiveTab('feed');
     } else {
-      // Switch to Admin
-      const adminUser = {
-        id: 'admin-demo-id',
-        email: 'admin@civicpulse.org',
-        role: 'admin',
-        first_name: 'Nodal Officer'
-      };
-      localStorage.setItem('civic_user', JSON.stringify(adminUser));
-      setUser(adminUser);
-      setActiveTab('agent');
+      // STRICT: You CANNOT become Admin without entering Admin password!
+      handleOpenAdminAuth();
     }
   };
 
@@ -108,7 +112,8 @@ export default function App() {
         setActiveTab={setActiveTab}
         onOpenReport={() => setIsReportOpen(true)}
         user={user}
-        onOpenAuth={() => setIsAuthOpen(true)}
+        onOpenAuth={handleOpenCitizenAuth}
+        onOpenAdminAuth={handleOpenAdminAuth}
         onLogout={handleLogout}
         onSwitchRole={handleSwitchRole}
       />
@@ -175,7 +180,7 @@ export default function App() {
           </div>
         )}
 
-        {/* Admin Advanced Web Graph & BI Dashboard (Officer Only) */}
+        {/* Admin Advanced Web Graph & BI Dashboard (Admin Only) */}
         {activeTab === 'admin_analytics' && (
           <div style={{ paddingTop: '80px' }}>
             {isAdmin ? (
@@ -187,7 +192,7 @@ export default function App() {
             ) : (
               <div style={{ maxWidth: '600px', margin: '120px auto', textAlign: 'center', color: '#f87171' }}>
                 <h3>Access Restricted</h3>
-                <p>The Executive Web Graph &amp; Network BI Dashboard is reserved for Municipal Nodal Officers.</p>
+                <p>The Executive Web Graph &amp; Network BI Dashboard is reserved for Municipal Administrators.</p>
                 <button
                   onClick={handleSwitchRole}
                   style={{
@@ -199,14 +204,14 @@ export default function App() {
                     marginTop: '16px'
                   }}
                 >
-                  Switch to Officer Mode
+                  Sign In as Admin
                 </button>
               </div>
             )}
           </div>
         )}
 
-        {/* Admin LangGraph Agent Lab (Officer Only) */}
+        {/* Admin LangGraph Agent Lab (Admin Only) */}
         {activeTab === 'agent' && (
           <div style={{ paddingTop: '80px' }}>
             {isAdmin ? (
@@ -216,7 +221,7 @@ export default function App() {
             ) : (
               <div style={{ maxWidth: '600px', margin: '120px auto', textAlign: 'center', color: '#f87171' }}>
                 <h3>Access Restricted</h3>
-                <p>The LangGraph Autonomous Agent Console is reserved for Municipal Nodal Officers.</p>
+                <p>The LangGraph Autonomous Agent Console is reserved for Municipal Administrators.</p>
                 <button
                   onClick={handleSwitchRole}
                   style={{
@@ -227,7 +232,7 @@ export default function App() {
                     fontWeight: '700'
                   }}
                 >
-                  Switch to Officer Mode
+                  Sign In as Admin
                 </button>
               </div>
             )}
@@ -235,7 +240,7 @@ export default function App() {
         )}
       </main>
 
-      {/* File Complaint Modal (Citizen / Officer) */}
+      {/* File Complaint Modal (Citizen / Admin) */}
       <ReportModal
         isOpen={isReportOpen}
         onClose={() => setIsReportOpen(false)}
@@ -245,13 +250,14 @@ export default function App() {
         }}
       />
 
-      {/* Auth Modal with 1-Click Citizen & Admin Login */}
+      {/* Secure Authentication Modal with Separate Citizen & Admin Portals */}
       <AuthModal
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
+        initialPortal={authPortal}
         onAuthSuccess={(u) => {
           setUser(u);
-          setActiveTab(u.role === 'admin' ? 'agent' : 'feed');
+          setActiveTab(u.role === 'admin' ? 'admin_analytics' : 'feed');
         }}
       />
 

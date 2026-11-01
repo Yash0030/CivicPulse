@@ -1,7 +1,7 @@
 import React from 'react';
 import { User, LogOut, ShieldAlert, CheckCircle, ShieldCheck } from 'lucide-react';
 
-export default function Navbar({ activeTab, setActiveTab, onOpenReport, user, onOpenAuth, onLogout, onSwitchRole }) {
+export default function Navbar({ activeTab, setActiveTab, onOpenReport, user, onOpenAuth, onOpenAdminAuth, onLogout, onSwitchRole }) {
   const isAdmin = user?.role === 'admin';
 
   // Role-specific navigation items
@@ -71,7 +71,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenReport, user, on
               letterSpacing: '0.04em'
             }}>
               <ShieldAlert size={14} />
-              ADMIN / NODAL OFFICER
+              MUNICIPAL ADMIN
             </div>
           ) : (
             <div style={{
@@ -144,21 +144,46 @@ export default function Navbar({ activeTab, setActiveTab, onOpenReport, user, on
         {/* Action Controls & User Account */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           
-          {/* Quick Role Switcher Button for instant demo testing */}
-          <button
-            onClick={onSwitchRole}
-            style={{
-              padding: '6px 14px',
-              borderRadius: '6px',
-              border: isAdmin ? '1px solid rgba(180, 235, 230, 0.4)' : '1px solid rgba(236, 179, 101, 0.4)',
-              background: isAdmin ? 'rgba(180, 235, 230, 0.1)' : 'rgba(236, 179, 101, 0.1)',
-              color: isAdmin ? '#B4EBE6' : '#ECB365',
-              fontSize: '12px',
-              fontWeight: '700'
-            }}
-          >
-            {isAdmin ? '👤 View as Citizen' : '🛡️ View as Officer'}
-          </button>
+          {/* Admin vs Citizen Action Buttons */}
+          {isAdmin ? (
+            <button
+              onClick={onSwitchRole}
+              title="Preview the platform as an ordinary citizen"
+              style={{
+                padding: '6px 14px',
+                borderRadius: '6px',
+                border: '1px solid rgba(180, 235, 230, 0.4)',
+                background: 'rgba(180, 235, 230, 0.1)',
+                color: '#B4EBE6',
+                fontSize: '12px',
+                fontWeight: '700',
+                cursor: 'pointer'
+              }}
+            >
+              👤 Switch to Citizen View
+            </button>
+          ) : (
+            <button
+              onClick={onOpenAdminAuth || onOpenAuth}
+              title="Sign in with Municipal Admin credentials"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '6px 14px',
+                borderRadius: '6px',
+                border: '1px solid #ECB365',
+                background: 'rgba(236, 179, 101, 0.15)',
+                color: '#ECB365',
+                fontSize: '12px',
+                fontWeight: '800',
+                cursor: 'pointer'
+              }}
+            >
+              <ShieldAlert size={14} />
+              🛡️ Admin Login
+            </button>
+          )}
 
           {/* Citizen-only "File Complaint" button in navbar */}
           {!isAdmin && (
@@ -175,6 +200,8 @@ export default function Navbar({ activeTab, setActiveTab, onOpenReport, user, on
                 fontSize: '13px',
                 fontWeight: '800',
                 boxShadow: '0 0 15px rgba(236, 179, 101, 0.35)',
+                border: 'none',
+                cursor: 'pointer'
               }}
             >
               <span>+ File Issue</span>
@@ -195,7 +222,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenReport, user, on
                 fontWeight: '600'
               }}>
                 <User size={15} color="#ECB365" />
-                <span>{user.first_name || user.email.split('@')[0]}</span>
+                <span>{user.role === 'admin' ? 'Admin' : (user.first_name || user.email.split('@')[0])}</span>
               </div>
               <button
                 onClick={onLogout}
@@ -205,7 +232,8 @@ export default function Navbar({ activeTab, setActiveTab, onOpenReport, user, on
                   borderRadius: '6px',
                   border: '1px solid rgba(239, 68, 68, 0.3)',
                   background: 'rgba(239, 68, 68, 0.12)',
-                  color: '#f87171'
+                  color: '#f87171',
+                  cursor: 'pointer'
                 }}
               >
                 <LogOut size={15} />
@@ -215,16 +243,17 @@ export default function Navbar({ activeTab, setActiveTab, onOpenReport, user, on
             <button
               onClick={onOpenAuth}
               style={{
-                border: '2px solid #ECB365',
+                border: '1px solid rgba(180, 235, 230, 0.3)',
                 padding: '7px 18px',
-                color: '#ffffff',
-                backgroundColor: 'transparent',
+                color: '#B4EBE6',
+                backgroundColor: 'rgba(180, 235, 230, 0.08)',
                 borderRadius: '6px',
                 fontWeight: '600',
-                fontSize: '14px'
+                fontSize: '13px',
+                cursor: 'pointer'
               }}
             >
-              Sign In
+              Citizen Sign In
             </button>
           )}
 

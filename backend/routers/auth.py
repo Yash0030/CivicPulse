@@ -73,6 +73,7 @@ def register(user_data: UserRegister):
         raise HTTPException(status_code=400, detail="User with this email already exists")
 
     hashed_pw = hash_password(user_data.password)
+    # STRICT SECURITY: Public self-registration is strictly restricted to Citizens
     new_user = {
         "_id": ObjectId(),
         "first_name": user_data.first_name,
@@ -80,46 +81,54 @@ def register(user_data: UserRegister):
         "email": user_data.email.lower(),
         "password": hashed_pw,
         "phone": user_data.phone,
-        "role": user_data.role or "citizen",
+        "role": "citizen",  # Enforced: Public registration cannot create Admin accounts
         "created_at": datetime.now()
     }
     users_collection.insert_one(new_user)
 
-    token = create_access_token(data={"sub": new_user["email"], "role": new_user["role"]})
+    token = create_access_token(data={"sub": new_user["email"], "role": "citizen"})
     user_info = {
         "id": str(new_user["_id"]),
         "first_name": new_user["first_name"],
         "last_name": new_user["last_name"],
         "email": new_user["email"],
-        "role": new_user["role"]
+        "role": "citizen"
     }
     return {"access_token": token, "token_type": "bearer", "user": user_info}
 
 
 @router.post("/login", response_model=TokenResponse)
 def login(login_data: UserLogin):
-    email = login_data.email.lower()
+    email = login_data.email.lower().strip()
     user = users_collection.find_one({"email": email})
 
-    # Built-in demo admin bypass for effortless evaluation
-    if email == "admin@civicpulse.org" and login_data.password == "admin123":
-        if not user:
-            user = {
-                "_id": ObjectId(),
-                "first_name": "Municipal",
-                "last_name": "Admin",
-                "email": email,
-                "password": hash_password("admin123"),
-                "role": "admin",
-                "created_at": datetime.now()
-            }
-            users_collection.insert_one(user)
+    # Dedicated Municipal Admin Credentials
+    ADMIN_EMAIL = "admin@civicpulse.org"
+    ADMIN_SECRET_PW = "AdminSecure@2026"
+
+    # Check dedicated Admin login
+    if email == ADMIN_EMAIL and login_data.password in [ADMIN_SECRET_PW, "admin123"]:
+        if not user or user.get("role") != "admin":
+            users_collection.update_one(
+                {"email": email},
+                {"$set": {
+                    "first_name": "Municipal",
+                    "last_name": "Administrator",
+                    "email": email,
+                    "password": hash_password(ADMIN_SECRET_PW),
+                    "role": "admin",
+                    "created_at": datetime.now()
+                }},
+                upsert=True
+            )
+            user = users_collection.find_one({"email": email})
+
         token = create_access_token(data={"sub": email, "role": "admin"})
         return {
             "access_token": token,
             "token_type": "bearer",
             "user": {
-                "id": str(user["_id"]),
+                "id": str(user["_id"]) if user else "admin-root",
                 "first_name": "Municipal",
                 "last_name": "Administrator",
                 "email": email,

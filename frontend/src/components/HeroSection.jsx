@@ -49,7 +49,7 @@ export default function HeroSection({ isAdmin, onOpenReport, onExploreMap, onGoT
           fontWeight: '500'
         }}>
           {isAdmin 
-            ? 'Municipal Officer Command Portal • Autonomous Pothole Redressal & Field Dispatch'
+            ? 'Municipal Admin Command Portal • Autonomous Pothole Redressal & Field Dispatch'
             : 'Intelligent Road Damage & Pothole Redressal Platform powered by Agentic AI'
           }
         </p>

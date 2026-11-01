@@ -89,7 +89,7 @@ export default function GrievanceFeed({ complaints, onVote, onRefresh, user }) {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontSize: '16px', fontWeight: '800', color: '#ECB365' }}>
-                🛡️ Municipal Officer Grievance Triage Console
+                🛡️ Municipal Admin Grievance Triage Console
               </span>
               <span style={{
                 fontSize: '11px',
